@@ -10,16 +10,19 @@
 */
 
 /*
- * Funkcje bazowe: n - liczba funkcji a,b - granice przedzialu aproksymacji i
- * - numer funkcji x - wspolrzedna dla ktorej obliczana jest wartosc funkcji
+ * Funkcje bazowe: 
+ * n - liczba funkcji 
+ * a,b - granice przedzialu aproksymacji 
+ * i- numer funkcji 
+ * x - wspolrzedna dla ktorej obliczana jest wartosc funkcji
  */
 double
 fi(double a, double b, int n, int i, double x)
 {
-	double		h = (b - a) / (n - 1);
+	double		h  = (b - a) / (n - 1);
 	double		h3 = h * h * h;
-	int		hi         [5] = {i - 2, i - 1, i, i + 1, i + 2};
-	double		hx      [5];
+	int		hi [5] = {i - 2, i - 1, i, i + 1, i + 2};
+	double		hx [5];
 	int		j;
 
 	for (j = 0; j < 5; j++)
@@ -27,12 +30,16 @@ fi(double a, double b, int n, int i, double x)
 
 	if ((x < hx[0]) || (x > hx[4]))
 		return 0;
+
 	else if (x >= hx[0] && x <= hx[1])
 		return 1 / h3 * (x - hx[0]) * (x - hx[0]) * (x - hx[0]);
+
 	else if (x > hx[1] && x <= hx[2])
 		return 1 / h3 * (h3 + 3 * h * h * (x - hx[1]) + 3 * h * (x - hx[1]) * (x - hx[1]) - 3 * (x - hx[1]) * (x - hx[1]) * (x - hx[1]));
+
 	else if (x > hx[2] && x <= hx[3])
 		return 1 / h3 * (h3 + 3 * h * h * (hx[3] - x) + 3 * h * (hx[3] - x) * (hx[3] - x) - 3 * (hx[3] - x) * (hx[3] - x) * (hx[3] - x));
+
 	else			/* if (x > hx[3]) && (x <= hx[4]) */
 		return 1 / h3 * (hx[4] - x) * (hx[4] - x) * (hx[4] - x);
 }
@@ -52,12 +59,16 @@ dfi(double a, double b, int n, int i, double x)
 
 	if ((x < hx[0]) || (x > hx[4]))
 		return 0;
+
 	else if (x >= hx[0] && x <= hx[1])
 		return 3 / h3 * (x - hx[0]) * (x - hx[0]);
+
 	else if (x > hx[1] && x <= hx[2])
 		return 1 / h3 * (3 * h * h + 6 * h * (x - hx[1]) - 9 * (x - hx[1]) * (x - hx[1]));
+
 	else if (x > hx[2] && x <= hx[3])
 		return 1 / h3 * (-3 * h * h - 6 * h * (hx[3] - x) + 9 * (hx[3] - x) * (hx[3] - x));
+
 	else			/* if (x > hx[3]) && (x <= hx[4]) */
 		return -3 / h3 * (hx[4] - x) * (hx[4] - x);
 }
@@ -77,12 +88,16 @@ d2fi(double a, double b, int n, int i, double x)
 
 	if ((x < hx[0]) || (x > hx[4]))
 		return 0;
+
 	else if (x >= hx[0] && x <= hx[1])
 		return 6 / h3 * (x - hx[0]);
+
 	else if (x > hx[1] && x <= hx[2])
 		return 1 / h3 * (6 * h - 18 * (x - hx[1]));
+
 	else if (x > hx[2] && x <= hx[3])
 		return 1 / h3 * (6 * h  -18 * (hx[3] - x));
+
 	else			/* if (x > hx[3]) && (x <= hx[4]) */
 		return 6 / h3 * (hx[4] - x);
 }
@@ -102,12 +117,16 @@ d3fi(double a, double b, int n, int i, double x)
 
 	if ((x < hx[0]) || (x > hx[4]))
 		return 0;
+
 	else if (x >= hx[0] && x <= hx[1])
 		return 6 / h3;
+
 	else if (x > hx[1] && x <= hx[2])
 		return -18 / h3;
+
 	else if (x > hx[2] && x <= hx[3])
 		return 18 / h3;
+
 	else			/* if (x > hx[3]) && (x <= hx[4]) */
 		return -6 / h3;
 }
@@ -126,11 +145,15 @@ xfi(double a, double b, int n, int i, FILE *out)
 		hx[j] = a + h * hi[j];
 
 	fprintf( out, "# nb=%d, i=%d: hi=[", n, i );
+
 	for( j= 0; j < 5; j++ )
 		fprintf( out, " %d", hi[j] );
+
 	fprintf( out, "] hx=[" );
+
 	for( j= 0; j < 5; j++ )
 		fprintf( out, " %g", hx[j] );
+
 	fprintf( out, "]\n" );
 }
 
@@ -145,7 +168,8 @@ make_spl(points_t * pts, spline_t * spl)
 	double		b = x[pts->n - 1];
 	int		i, j, k;
 	int		nb = pts->n - 3 > 10 ? 10 : pts->n - 3;
-  char *nbEnv= getenv( "APPROX_BASE_SIZE" );
+	
+	char *nbEnv= getenv( "APPROX_BASE_SIZE" );
 
 	if( nbEnv != NULL && atoi( nbEnv ) > 0 )
 		nb = atoi( nbEnv );
@@ -223,10 +247,10 @@ make_spl(points_t * pts, spline_t * spl)
 			double d3yi= 0;
 			double xi= a + i * dx;
 			for( k= 0; k < nb; k++ ) {
-							yi += get_entry_matrix(eqs, k, nb) * fi(a, b, nb, k, xi);
-							dyi += get_entry_matrix(eqs, k, nb) * dfi(a, b, nb, k, xi);
-							d2yi += get_entry_matrix(eqs, k, nb) * d2fi(a, b, nb, k, xi);
-							d3yi += get_entry_matrix(eqs, k, nb) * d3fi(a, b, nb, k, xi);
+				yi += get_entry_matrix(eqs, k, nb) * fi(a, b, nb, k, xi);
+				dyi += get_entry_matrix(eqs, k, nb) * dfi(a, b, nb, k, xi);
+				d2yi += get_entry_matrix(eqs, k, nb) * d2fi(a, b, nb, k, xi);
+				d3yi += get_entry_matrix(eqs, k, nb) * d3fi(a, b, nb, k, xi);
 			}
 			fprintf(tst, "%g %g %g %g %g\n", xi, yi, dyi, d2yi, d3yi );
 		}

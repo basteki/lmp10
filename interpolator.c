@@ -4,15 +4,15 @@
 #include <stdio.h>
 
 void
-make_spl (points_t * pts, spline_t * spl)
-{
+make_spl (points_t * pts, spline_t * spl){
 
 	int n= pts->n - 1;
+	int i;
+	
 	matrix_t *eqs= make_matrix( n*3, n*3+1 );
+
 	double *x = pts->x;
 	double *y = pts->y;
-
-	int i;
 
 	for( i= 0; i < n; i++ ) {
 		double dx= x[i+1] - x[i];
@@ -26,12 +26,15 @@ make_spl (points_t * pts, spline_t * spl)
 		put_entry_matrix( eqs, if2, if1, 1 );
 		put_entry_matrix( eqs, if2, if2, dx );
 		put_entry_matrix( eqs, if2, if3, dx*dx/2 );
+
 		if( if3+1 < n*3 )
 			put_entry_matrix( eqs, if2, if3+1, -1 );
+
 		else
 			put_entry_matrix( eqs, if2, if1, 0 );
 		put_entry_matrix( eqs, if3, if2, 1 );
 		put_entry_matrix( eqs, if3, if3, dx );
+
 		if( if3+2 < n*3 )
 			put_entry_matrix( eqs, if3, if3+2, -1 );
 	}
