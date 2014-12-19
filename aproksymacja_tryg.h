@@ -4,6 +4,14 @@
 #include <stdio.h>
 
 
-aproks_tryg((double a, double b, int n, int i, double x)
+int max_wielomian(int n)
+
+double a_0(double x[n],double &suma)
+
+double a_j(double a, double b, int n, int i, double x)
+
+double b_j(double a, double b, int n, int i, double x)
+
+void make_spl(points_t * pts, spline_t * spl)
 
 #endif
