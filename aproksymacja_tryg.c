@@ -33,15 +33,13 @@ int max_wielomian(int n){
 	return m;	
 }
 
-double         *x = pts->x;
-double         *y = pts->y;
 
 /*Współczynnik a0 jest średnią arytmetyczną x[1-n]*/
 
-double a_0(double x[n],double &suma){
-	suma = 0;
+double a_0(double x[], int n){
+	double suma = 0;
     int j;
-	for (int j=0; j<n; j++){
+	for (j=0; j<n; j++){
         suma+=x[j];
     }
     
@@ -49,8 +47,8 @@ double a_0(double x[n],double &suma){
     return suma;    
 }
 /*Współczynnik aj (j = 1,2..., m)*/
-double a_j(double a, double b, int n, int i, double x){
-	int j;
+double a_j(double a, double b, int n, int i, double x[n]){
+	int j, m;
 	double sumaA = 0;
 	
 	m = max_wielomian(n);
@@ -58,12 +56,12 @@ double a_j(double a, double b, int n, int i, double x){
 	for(j = 0; j<=m; j++){
 		sumaA += x[j-1]*cos(2*M_PI*i*j/n);
 		}
-	return suma1*2/n;
+	return sumaA*2/n;
 }
 
 /*Współczynnik bj (j = 1,2..., m)*/
-double b_j(double a, double b, int n, int i, double x){
-	int j;
+double b_j(double a, double b, int n, int i, double x[n]){
+	int j, m;
 	double sumaB = 0;
 	
 	m = max_wielomian(n);
@@ -71,7 +69,7 @@ double b_j(double a, double b, int n, int i, double x){
 	for(j = 0; j<=m; j++){
 		sumaB += x[j-1]*sin(2*M_PI*i*j/n);
 		}
-	return suma2*2/n;
+	return sumaB*2/n;
 }
 
 
@@ -92,3 +90,4 @@ void make_spl(points_t * pts, spline_t * spl){
 		nb = atoi( nbEnv );
 
 	eqs = make_matrix(nb, nb + 1);
+}
