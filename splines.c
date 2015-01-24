@@ -9,7 +9,7 @@
 int alloc_spl (spline_t * spl, int n){
   	spl->n = n;
   	return MALLOC_FAILED (spl->x, spl->n)
-    	|| MALLOC_FAILED (spl->f, spl->n)
+    	|| MALLOC_FAILED (spl->y, spl->n)
     	|| MALLOC_FAILED (spl->a, spl->n)
     	|| MALLOC_FAILED (spl->b, spl->n);
 }
@@ -23,7 +23,7 @@ int read_spl (FILE * inf, spline_t * spl){
     		return 1;
 
   	for (i = 0; i < spl->n; i++)
-    		if (fscanf(inf, "%lf %lf %lf %lf", spl->x + i, spl->f + i, spl->a + i, spl->b + i) != 4)
+    		if (fscanf(inf, "%lf %lf %lf %lf", spl->x + i, spl->y + i, spl->a + i, spl->b + i) != 4)
       		return 1;
 
   	return 0;
@@ -33,23 +33,21 @@ void write_spl (spline_t * spl, FILE * ouf){
  	int i;
   	fprintf (ouf, "%d\n", spl->n);
   	for (i = 0; i < spl->n; i++)
-    		fprintf (ouf, "%g %g %g %g\n", spl->x[i], spl->f[i], spl->a[i], spl->b[i]);
+    		fprintf (ouf, "%g %g %g %g\n", spl->x[i], spl->y[i], spl->a[i], spl->b[i]);
 }
 
 double
 value_spl (spline_t * spl, double x){
   	int i;
-  	double f = 0.0;
+  	double y = 0.0;
 	int m;
-
+	int n = spl->n;
 	m = max_wielomian(spl->n);
 
-	if( nbEnv != NULL && atoi( nbEnv ) > 0 && atoi( nbEnv ) <= m)
-		m = atoi( nbEnv );
 	
 	for (i = 1; i<=m; i++)
-		f+= (spl->a[i] *cos(2*M_PI*i*x/spl->n) + (spl->b[i])*sin(2*M_PI*i*x/spl->n));
-	f+= spl->a[0];
+		y+= (spl->a[i] *cos(2*M_PI*i*x/(spl->x[n-1] - spl->x[0]+spl->x[n-1] - spl->x[n-2])) + (spl->b[i])*sin(2*M_PI*i*x/(spl->x[n-1] - spl->x[0] + spl->x[n-1] - spl->x[n-2])));
+	y+= spl->a[0];
 	
-	return f;
+	return y;
 }

@@ -23,7 +23,7 @@
 
  
 int max_wielomian(int n){
-	int j,k,m; /* j - jndex, k- kolejny index,  m - maksymalny stopień wielomianu*/
+	int j, m; /* j - jndex, k- kolejny index,  m - maksymalny stopień wielomianu*/
 	
 	for(j=0, m=0; j<n; j++){
 		m++;
@@ -37,14 +37,9 @@ int max_wielomian(int n){
 
 void make_spl(points_t * pts, spline_t * spl){
 
-int i, j, m;
-        int n = pts->n;
-        double p = 2*M_PI/n;
+	int i, j, m;
 
-        if (n % 2 == 1)
-                m = (n-1)/2;
-        else
-                m = n/2;
+        m = max_wielomian(pts->n);
 
         if (alloc_spl(spl, pts->n) == 0) {
                 spl->x = pts->x;
@@ -53,12 +48,12 @@ int i, j, m;
                 for (i=0 ; i <= m ; i++) {
                         spl->a[i] = 0.0;
                         spl->b[i] = 0.0;
-                                for(j = 0; j < n ; j++) {
-                                        spl->a[i] += spl->y[j]*cos(p*i*j);
-                                        spl->b[i] += spl->y[j]*sin(p*i*j);
+                                for(j = 0; j < pts->n ; j++) {
+                                        spl->a[i] += spl->y[j]*cos(2*M_PI*i*j/pts->n);
+                                        spl->b[i] += spl->y[j]*sin(2*M_PI*i*j/pts->n);
                                 }
-                        spl->a[i] *= 2.0/n;
-                        spl->b[i] *= 2.0/n;
+                        spl->a[i] *= 2.0/pts->n;
+                        spl->b[i] *= 2.0/pts->n;
                 }
         }
 }
