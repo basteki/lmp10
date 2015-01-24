@@ -34,70 +34,31 @@ int max_wielomian(int n){
 }
 
 
-/*Współczynnik a0 jest średnią arytmetyczną x[1-n]*/
-
-double a_0(double x[], int n){
-	double suma = 0;
-    int j;
-	for (j=0; j<n; j++){
-        suma+=x[j];
-    }
-    
-	suma=suma/n;
-    return suma;    
-}
-/*Współczynnik aj (j = 1,2..., m)*/
-double a_j(int n, int i, double x[n]){
-	int j, m;
-	double sumaA = 0;
-	
-	m = max_wielomian(n);
-	
-	for(j = 0; j<=m; j++){
-		sumaA += x[j-1]*cos(2*M_PI*i*j/n);
-		}
-	return sumaA*2/n;
-}
-
-/*Współczynnik bj (j = 1,2..., m)*/
-double b_j(int n, int i, double x[n]){
-	int j, m;
-	double sumaB = 0;
-	
-	m = max_wielomian(n);
-	
-	for(j = 0; j<=m; j++){
-		sumaB += x[j-1]*sin(2*M_PI*i*j/n);
-		}
-	return sumaB*2/n;
-}
-
-
 
 void make_spl(points_t * pts, spline_t * spl){
 
-	matrix_t       *eqs= NULL;
-	double         *x = pts->x;
-	double         *y = pts->y;
-	
-	int		i, j, m;
-	
-	char *nbEnv= getenv( "APPROX_BASE_SIZE" );
+int i, j, m;
+        int n = pts->n;
+        double p = 2*M_PI/n;
 
-	m=max_wielomian(pts->n);
-	
-	spl->x = x;
-	spl->f = y;
-	spl->a[0] = 0.0;
-	spl->a[0] = a_0(pts->x, pts->n);
-	for(j = 1; j<=m; j++){
-		
-		spl->a[j] = 0.0;
-		spl->b[j] = 0.0;
-	
-		for(i=1; i<=spl->n; i++){
-			spl->a[j] = a_j(pts->n, i, pts->x);
-			spl->b[j] = b_j(pts->n, i, pts->x);
-		}
-	}
+        if (n % 2 == 1)
+                m = (n-1)/2;
+        else
+                m = n/2;
+
+        if (alloc_spl(spl, pts->n) == 0) {
+                spl->x = pts->x;
+                spl->y = pts->y;
+
+                for (i=0 ; i <= m ; i++) {
+                        spl->a[i] = 0.0;
+                        spl->b[i] = 0.0;
+                                for(j = 0; j < n ; j++) {
+                                        spl->a[i] += spl->y[j]*cos(p*i*j);
+                                        spl->b[i] += spl->y[j]*sin(p*i*j);
+                                }
+                        spl->a[i] *= 2.0/n;
+                        spl->b[i] *= 2.0/n;
+                }
+        }
 }

@@ -44,6 +44,8 @@ value_spl (spline_t * spl, double x){
 
 	m = max_wielomian(spl->n);
 
+	if( nbEnv != NULL && atoi( nbEnv ) > 0 && atoi( nbEnv ) <= m)
+		m = atoi( nbEnv );
 	
 	for (i = 1; i<=m; i++)
 		f+= (spl->a[i] *cos(2*M_PI*i*x/spl->n) + (spl->b[i])*sin(2*M_PI*i*x/spl->n));
