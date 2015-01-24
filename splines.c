@@ -44,12 +44,19 @@ value_spl (spline_t * spl, double x){
 	int n = spl->n;
 	m = max_wielomian(spl->n);
 
+<<<<<<< HEAD
 
 	y = spl->a[0]/2;
 	
 	for (i = 1; i<=m; i++)
 		y+= (spl->a[i]*cos(2*M_PI*i*x/(spl->x[n-1] - spl->x[0] + spl->x[n-1] - spl->x[n-2])) + spl->b[i]*sin(2*M_PI*i*x/(spl->x[n-1] - spl->x[0] + spl->x[n-1] - spl->x[n-2])));
 //	y+= spl->a[m]/2*cos();
+=======
+	
+	for (i = 1; i<=m; i++)
+		y+= (spl->a[i] *cos(2*M_PI*i*x/(spl->x[n-1] - spl->x[0]+spl->x[n-1] - spl->x[n-2])) + (spl->b[i])*sin(2*M_PI*i*x/(spl->x[n-1] - spl->x[0] + spl->x[n-1] - spl->x[n-2])));
+	y+= spl->a[0];
+>>>>>>> origin/master
 	
 	return y;
 }
