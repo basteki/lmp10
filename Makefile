@@ -1,5 +1,5 @@
-aprox: main.o splines.o points.o aproksymacja_tryg.o gaus/libge.a
-	$(CC) -o aprox  main.o splines.o points.o aproksymacja_tryg.o -L gaus -l ge
+aprox: main.o splines.o points.o aproksymacja_tryg.o 
+	$(CC) -o aprox  main.o splines.o points.o aproksymacja_tryg.o -L gaus -l ge -lm
 
 intrp: main.o splines.o points.o interpolator.o gaus/libge.a
 	$(CC) -o intrp  main.o splines.o points.o interpolator.o -L gaus -l ge
@@ -7,8 +7,8 @@ intrp: main.o splines.o points.o interpolator.o gaus/libge.a
 prosta: main.o splines.o points.o prosta.o
 	$(CC) -o prosta  main.o splines.o points.o prosta.o	
 
-aproksymacja_tryg.o: makespl.h points.h gaus/piv_ge_solver.h
-	$(CC) -I gaus -c aproksymacja_tryg.c
+aproksymacja_tryg.o: makespl.h points.h 
+	$(CC) -I gaus -c aproksymacja_tryg.c -lm
 
 interpolator.o: makespl.h points.h gaus/piv_ge_solver.h
 	$(CC) -I gaus -c interpolator.c

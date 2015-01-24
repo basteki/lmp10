@@ -1,6 +1,8 @@
 #include "splines.h"
-
+#include "points.h"
+#include "aproksymacja_tryg.h"
 #include <stdlib.h>
+#include <math.h>
 
 #define MALLOC_FAILED( P, SIZE ) (((P)=malloc( (SIZE)*sizeof( *(P))))==NULL)
 
@@ -8,9 +10,8 @@ int alloc_spl (spline_t * spl, int n){
   	spl->n = n;
   	return MALLOC_FAILED (spl->x, spl->n)
     	|| MALLOC_FAILED (spl->f, spl->n)
-    	|| MALLOC_FAILED (spl->f1, spl->n)
-    	|| MALLOC_FAILED (spl->f2, spl->n)
-    	|| MALLOC_FAILED (spl->f3, spl->n);
+    	|| MALLOC_FAILED (spl->a, spl->n)
+    	|| MALLOC_FAILED (spl->b, spl->n);
 }
 
 int read_spl (FILE * inf, spline_t * spl){
@@ -22,7 +23,7 @@ int read_spl (FILE * inf, spline_t * spl){
     		return 1;
 
   	for (i = 0; i < spl->n; i++)
-    		if (fscanf(inf, "%lf %lf %lf %lf %lf", spl->x + i, spl->f + i, spl->f1 + i, spl->f2 + i, spl->f3 + i) != 5)
+    		if (fscanf(inf, "%lf %lf %lf %lf", spl->x + i, spl->f + i, spl->a + i, spl->b + i) != 4)
       		return 1;
 
   	return 0;
@@ -32,23 +33,21 @@ void write_spl (spline_t * spl, FILE * ouf){
  	int i;
   	fprintf (ouf, "%d\n", spl->n);
   	for (i = 0; i < spl->n; i++)
-    		fprintf (ouf, "%g %g %g %g %g\n", spl->x[i], spl->f[i], spl->f1[i],
-             	spl->f2[i], spl->f3[i]);
+    		fprintf (ouf, "%g %g %g %g\n", spl->x[i], spl->f[i], spl->a[i], spl->b[i]);
 }
 
 double
 value_spl (spline_t * spl, double x){
   	int i;
-  	double dx;
+  	double f = 0.0;
+	int m;
 
-  	for (i = spl->n - 1; i > 0; i--)
-    		if (spl->x[i] < x)
-      			break;
+	m = max_wielomian(spl->n);
 
-  	dx = x - spl->x[i];
-
-  	return spl->f[i]
-		+ dx * spl->f1[i]
-		+ dx * dx / 2 *  spl->f2[i] 
-		+ dx * dx * dx / 6 * spl->f3[i];
+	
+	for (i = 1; i<=m; i++)
+		f+= (spl->a[i] *cos(2*M_PI*i*x/spl->n) + (spl->b[i])*sin(2*M_PI*i*x/spl->n));
+	f+= spl->a[0];
+	
+	return f;
 }

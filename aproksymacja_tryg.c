@@ -47,7 +47,7 @@ double a_0(double x[], int n){
     return suma;    
 }
 /*Współczynnik aj (j = 1,2..., m)*/
-double a_j(double a, double b, int n, int i, double x[n]){
+double a_j(int n, int i, double x[n]){
 	int j, m;
 	double sumaA = 0;
 	
@@ -60,7 +60,7 @@ double a_j(double a, double b, int n, int i, double x[n]){
 }
 
 /*Współczynnik bj (j = 1,2..., m)*/
-double b_j(double a, double b, int n, int i, double x[n]){
+double b_j(int n, int i, double x[n]){
 	int j, m;
 	double sumaB = 0;
 	
@@ -79,15 +79,25 @@ void make_spl(points_t * pts, spline_t * spl){
 	matrix_t       *eqs= NULL;
 	double         *x = pts->x;
 	double         *y = pts->y;
-	double		a = x[0];
-	double		b = x[pts->n - 1];
-	int		i, j, k;
-	int		nb = pts->n - 3 > 10 ? 10 : pts->n - 3;
+	
+	int		i, j, m;
 	
 	char *nbEnv= getenv( "APPROX_BASE_SIZE" );
 
-	if( nbEnv != NULL && atoi( nbEnv ) > 0 )
-		nb = atoi( nbEnv );
-
-	eqs = make_matrix(nb, nb + 1);
+	m=max_wielomian(pts->n);
+	
+	spl->x = x;
+	spl->f = y;
+	spl->a[0] = 0.0;
+	spl->a[0] = a_0(pts->x, pts->n);
+	for(j = 1; j<=m; j++){
+		
+		spl->a[j] = 0.0;
+		spl->b[j] = 0.0;
+	
+		for(i=1; i<=spl->n; i++){
+			spl->a[j] = a_j(pts->n, i, pts->x);
+			spl->b[j] = b_j(pts->n, i, pts->x);
+		}
+	}
 }
