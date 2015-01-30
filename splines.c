@@ -39,24 +39,27 @@ void write_spl (spline_t * spl, FILE * ouf){
 double
 value_spl (spline_t * spl, double x){
   	int i;
-  	double y = 0.0;
+  	double y;
 	int m;
 	int n = spl->n;
-	m = max_wielomian(spl->n);
+	char *nbEnv= getenv( "APPROX_BASE_SIZE" );
 
-<<<<<<< HEAD
+
+	m = max_wielomian(spl->n);
 
 	y = spl->a[0]/2;
 	
-	for (i = 1; i<=m; i++)
+	if( nbEnv != NULL && atoi( nbEnv ) > 0 && atoi( nbEnv ) <= m)
+			m = atoi( nbEnv );
+
+
+	for (i = 1; i<m; i++)
 		y+= (spl->a[i]*cos(2*M_PI*i*x/(spl->x[n-1] - spl->x[0] + spl->x[n-1] - spl->x[n-2])) + spl->b[i]*sin(2*M_PI*i*x/(spl->x[n-1] - spl->x[0] + spl->x[n-1] - spl->x[n-2])));
-//	y+= spl->a[m]/2*cos();
-=======
+
+	y+= spl->a[m]/2*cos(2*M_PI/(spl->x[n-1] - spl->x[0] + spl->x[n-1] - spl->x[n-2]));
+
 	
-	for (i = 1; i<=m; i++)
-		y+= (spl->a[i] *cos(2*M_PI*i*x/(spl->x[n-1] - spl->x[0]+spl->x[n-1] - spl->x[n-2])) + (spl->b[i])*sin(2*M_PI*i*x/(spl->x[n-1] - spl->x[0] + spl->x[n-1] - spl->x[n-2])));
-	y+= spl->a[0];
->>>>>>> origin/master
+
 	
 	return y;
 }
